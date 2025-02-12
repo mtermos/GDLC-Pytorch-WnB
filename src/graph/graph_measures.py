@@ -82,7 +82,7 @@ def get_degrees(G, verbose):
 
 
 @time_execution
-def find_communities(G, verbose):
+def find_communities(G, verbose=False):
 
     start_time = timeit.default_timer()
     G1 = ig.Graph.from_networkx(G)
@@ -98,9 +98,8 @@ def find_communities(G, verbose):
                            for node_index in com])
 
     # communities = nx.community.louvain_communities(G)
-    if verbose:
-        print(
-            f"==>> number_of_communities: {len(communities)}, in {str(timeit.default_timer() - start_time)} seconds")
+    print(
+        f"==>> number_of_communities: {len(communities)}, in {str(timeit.default_timer() - start_time)} seconds")
 
     return G1, part, communities
 

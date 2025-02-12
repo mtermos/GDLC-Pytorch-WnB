@@ -127,6 +127,7 @@ datasets_list = [
                 class_col="Attack",
                 class_num_col="Class",
                 timestamp_format="mixed",
+                centralities_set=4,
                 drop_columns=["Flow ID", "Src IP", "Dst IP",
                               "Timestamp", "Src Port", "Dst Port", "Attack"],
                 weak_columns=['Active Max', 'Active Mean', 'Bwd Blk Rate Avg', 'Bwd Byts/b Avg', 'Bwd Header Len', 'Bwd IAT Mean', 'Bwd IAT Std', 'Bwd IAT Tot', 'Bwd PSH Flags', 'Bwd Pkt Len Max', 'Bwd Pkt Len Mean', 'Bwd Pkt Len Min', 'Bwd Pkt Len Std', 'Bwd Pkts/b Avg', 'Bwd URG Flags', 'CWE Flag Count', 'Flow Duration', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Std', 'Flow Pkts/s', 'Fwd Blk Rate Avg',

@@ -24,7 +24,7 @@ def main():
     multi_class = True
 
     sort_timestamp = False
-    sort_after_partition = True
+    sort_after_partition = False
 
     use_port_in_address = False
     generated_ips = False
@@ -32,9 +32,9 @@ def main():
     # Hyperparameters
     # dataset_name = "cic_ton_iot_5_percent"
     # dataset_name = "cic_ton_iot"
-    dataset_name = "cic_ids_2017_5_percent"
+    # dataset_name = "cic_ids_2017_5_percent"
     # dataset_name = "cic_ids_2017"
-    # dataset_name = "cic_bot_iot"
+    dataset_name = "cic_bot_iot"
     # dataset_name = "cic_ton_iot_modified"
     # dataset_name = "nf_ton_iotv2_modified"
     # dataset_name = "ccd_inid_modified"
@@ -55,7 +55,7 @@ def main():
     rnn_num_layers = 2
     rnn_hidden_size = 80
     dropout = 0.3
-    sequence_length = 3
+    sequence_length = 1
     stride = 1
     activation = F.relu
     multi_class = True
@@ -117,7 +117,7 @@ def main():
     criterion = nn.CrossEntropyLoss(weight=data_module.class_weights)
 
     my_models = {
-        # "fnn": NIDSFNN(hidden_units=fnn_hidden_units, num_features=data_module.num_features, num_classes=num_classes, dropout=0.2, use_bn=True),
+        "fnn": NIDSFNN(hidden_units=fnn_hidden_units, num_features=data_module.num_features, num_classes=num_classes, dropout=0.2, use_bn=True),
         "cnn": NIDSCNN(out_channels=cnn_out_channels_list, num_features=data_module.num_features, num_classes=num_classes, dropout=dropout),
         # "gru": NIDSGRU(num_features=data_module.num_features, hidden_size=rnn_hidden_size, num_layers=rnn_num_layers, num_classes=num_classes, dropout=dropout),
         # "lstm": NIDSLSTM(num_features=data_module.num_features, hidden_size=rnn_hidden_size, num_layers=rnn_num_layers, num_classes=num_classes, dropout=dropout),
