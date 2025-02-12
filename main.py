@@ -14,6 +14,7 @@ from src.models import NIDSFNN, NIDSCNN, NIDSGRU, NIDSLSTM, CNN_LSTM
 from src.lightning_model import LitClassifier
 from src.lightning_data import LitDataModule
 from src.dataset.dataset_info import datasets, network_features
+from local_variables import local_datasets_path
 
 warnings.filterwarnings("ignore", ".*does not have many workers.*")
 
@@ -78,7 +79,8 @@ def main():
         exp_type += "__unsorted"
 
     dataset = datasets[dataset_name]
-    dataset_folder = os.path.join("datasets", dataset.name)
+
+    dataset_folder = os.path.join(local_datasets_path, dataset.name)
     gdlc_folder = os.path.join(dataset_folder, exp_type)
     logs_folder = os.path.join("logs", dataset.name)
     os.makedirs(logs_folder, exist_ok=True)

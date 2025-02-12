@@ -2,7 +2,6 @@ class DatasetInfo:
     def __init__(
             self,
             name,
-            path,
             file_type,
 
             # Key Columns names
@@ -28,7 +27,6 @@ class DatasetInfo:
     ):
 
         self.name = name
-        self.path = path
         self.file_type = file_type
         self.src_ip_col = src_ip_col
         self.src_port_col = src_port_col
@@ -47,7 +45,6 @@ class DatasetInfo:
 
 datasets_list = [
     DatasetInfo(name="cic_ton_iot_5_percent",
-                path="datasets/cic_ton_iot_5_percent/cic_ton_iot_5_percent.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -66,7 +63,6 @@ datasets_list = [
                               'CWE Flag Count', 'Bwd IAT Tot', 'Fwd IAT Mean', 'Fwd Pkt Len Std', 'Pkt Len Mean', 'Flow IAT Min', 'TotLen Bwd Pkts', 'Bwd Pkt Len Max', 'Pkt Len Var', 'FIN Flag Cnt', 'Bwd IAT Mean', 'Idle Mean', 'Pkt Len Max', 'Flow Pkts/s', 'Flow Duration', 'Pkt Len Std', 'Fwd IAT Tot', 'PSH Flag Cnt', 'Active Mean', 'Bwd Pkt Len Std', 'Fwd Pkt Len Mean']
                 ),
     DatasetInfo(name="cic_ton_iot",
-                path="datasets/cic_ton_iot/cic_ton_iot.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -85,7 +81,6 @@ datasets_list = [
                               'Flow Duration', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow Pkts/s', 'Fwd IAT Mean', 'Fwd IAT Tot', 'Fwd Pkt Len Max', 'Fwd Pkt Len Mean', 'Fwd Pkt Len Std', 'Fwd Seg Size Avg', 'Idle Mean', 'PSH Flag Cnt', 'Pkt Len Max', 'Pkt Len Mean', 'Pkt Len Std', 'Pkt Len Var', 'Pkt Size Avg', 'Tot Bwd Pkts', 'TotLen Bwd Pkts']
                 ),
     DatasetInfo(name="cic_ids_2017_5_percent",
-                path="datasets/cic_ids_2017_5_percent/cic_ids_2017_5_percent.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -104,7 +99,6 @@ datasets_list = [
                               'Subflow Bwd Pkts', 'Bwd IAT Std', 'Fwd IAT Mean', 'Fwd Pkt Len Std', 'Pkt Len Mean', 'Flow IAT Std', 'Fwd URG Flags', 'TotLen Bwd Pkts', 'Bwd Pkt Len Max',  'Pkt Len Var',  'Tot Fwd Pkts', 'Bwd IAT Mean', 'TotLen Fwd Pkts', 'Fwd PSH Flags', 'Idle Mean', 'Pkt Len Max', 'Flow Pkts/s', 'Flow Duration', 'Pkt Len Std', 'Fwd IAT Max',  'Fwd IAT Tot', 'RST Flag Cnt', 'Subflow Bwd Byts', 'Active Mean', 'Bwd Pkt Len Std', 'Fwd Pkt Len Mean']
                 ),
     DatasetInfo(name="cic_ids_2017",
-                path="datasets/cic_ids_2017/cic_ids_2017.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -122,7 +116,6 @@ datasets_list = [
                               'Subflow Bwd Pkts', 'Bwd IAT Std', 'Fwd IAT Mean', 'Fwd Pkt Len Std', 'Pkt Len Mean', 'Flow IAT Std', 'Fwd URG Flags', 'TotLen Bwd Pkts', 'Bwd Pkt Len Max',  'Pkt Len Var',  'Tot Fwd Pkts', 'Bwd IAT Mean', 'TotLen Fwd Pkts', 'Fwd PSH Flags', 'Idle Mean', 'Pkt Len Max', 'Flow Pkts/s', 'Flow Duration', 'Pkt Len Std', 'Fwd IAT Max',  'Fwd IAT Tot', 'RST Flag Cnt', 'Subflow Bwd Byts', 'Active Mean', 'Bwd Pkt Len Std', 'Fwd Pkt Len Mean']
                 ),
     DatasetInfo(name="cic_bot_iot",
-                path="datasets/cic_bot_iot/cic_bot_iot.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -140,7 +133,6 @@ datasets_list = [
                               'Fwd Byts/b Avg', 'Fwd Header Len', 'Fwd IAT Max', 'Fwd IAT Mean', 'Fwd PSH Flags', 'Fwd Pkt Len Max', 'Fwd Pkt Len Mean', 'Fwd Pkt Len Min', 'Fwd Pkts/b Avg', 'Fwd Seg Size Min', 'Fwd URG Flags', 'Idle Max', 'Idle Mean', 'Init Fwd Win Byts', 'Pkt Len Max', 'Pkt Len Mean', 'Pkt Size Avg', 'Subflow Fwd Pkts', 'Tot Bwd Pkts', 'Tot Fwd Pkts', 'TotLen Bwd Pkts', 'TotLen Fwd Pkts']
                 ),
     DatasetInfo(name="cic_ton_iot_modified",
-                path="datasets/cic_ton_iot_modified/cic_ton_iot_modified.parquet",
                 file_type="parquet",
                 src_ip_col="Src IP",
                 src_port_col="Src Port",
@@ -159,7 +151,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="nf_ton_iotv2_modified",
-                path="./datasets/nf_ton_iotv2_modified/nf_ton_iotv2_modified.parquet",
                 file_type="parquet",
                 src_ip_col="IPV4_SRC_ADDR",
                 src_port_col="L4_SRC_PORT",
@@ -178,7 +169,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="ccd_inid_modified",
-                path="./datasets/ccd_inid_modified/ccd_inid_modified.parquet",
                 file_type="parquet",
                 src_ip_col="src_ip",
                 src_port_col="src_port",
@@ -198,7 +188,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="nf_uq_nids_modified",
-                path="./datasets/nf_uq_nids_modified/nf_uq_nids_modified.parquet",
                 file_type="parquet",
                 src_ip_col="IPV4_SRC_ADDR",
                 src_port_col="L4_SRC_PORT",
@@ -216,7 +205,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="edge_iiot",
-                path="./datasets/edge_iiot/edge_iiot.parquet",
                 file_type="parquet",
                 src_ip_col="ip.src_host",
                 src_port_col=None,
@@ -235,7 +223,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="nf_cse_cic_ids2018",
-                path="./datasets/nf_cse_cic_ids2018/nf_cse_cic_ids2018.parquet",
                 file_type="parquet",
                 src_ip_col="IPV4_SRC_ADDR",
                 src_port_col="L4_SRC_PORT",
@@ -253,7 +240,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="nf_bot_iotv2",
-                path="./datasets/nf_bot_iotv2/nf_bot_iotv2.parquet",
                 file_type="parquet",
                 src_ip_col="IPV4_SRC_ADDR",
                 src_port_col="L4_SRC_PORT",
@@ -272,7 +258,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="nf_uq_nids",
-                path="./datasets/nf_uq_nids/nf_uq_nids.parquet",
                 file_type="parquet",
                 src_ip_col="IPV4_SRC_ADDR",
                 src_port_col="L4_SRC_PORT",
@@ -290,7 +275,6 @@ datasets_list = [
                 ),
 
     DatasetInfo(name="x_iiot",
-                path="./datasets/x_iiot/x_iiot.parquet",
                 file_type="parquet",
                 src_ip_col="Scr_IP",
                 src_port_col="Scr_port",
