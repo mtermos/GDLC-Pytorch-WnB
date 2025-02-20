@@ -125,7 +125,7 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 class LitClassifier(pl.LightningModule):
-    def __init__(self, model, criterion, learning_rate, config, model_name, labels_mapping, weight_decay=0, multi_class=False, label_col="Label", class_num_col="Class", batch_size=128):
+    def __init__(self, model, criterion, learning_rate, config, model_name, labels_mapping, weight_decay=0, using_wandb=False, multi_class=False, label_col="Label", class_num_col="Class", batch_size=128):
         """
         model:      your neural network (an instance of nn.Module)
         criterion:  loss function
@@ -138,6 +138,7 @@ class LitClassifier(pl.LightningModule):
         self.criterion = criterion
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
+        self.using_wandb = using_wandb
         self.model_name = model_name
         self.labels = list(labels_mapping.values())
         self.labels_mapping = labels_mapping
@@ -265,7 +266,8 @@ class LitClassifier(pl.LightningModule):
         with open(json_path, "w") as f:
             json.dump(results, f, indent=4, cls=NumpyEncoder)
 
-        wandb.save(json_path)
+        if self.using_wandb:
+            wandb.save(json_path)
 
         print("=== Test Evaluation Metrics ===")
         print("Classification Report:\n", report)
@@ -279,18 +281,22 @@ class LitClassifier(pl.LightningModule):
                                     file_path=None,
                                     show_figure=False)
 
-        wandb.log({f"confusion_matrix_{self.model_name}": wandb.Image(
-            fig), "epoch": self.current_epoch})
+        if self.using_wandb:
+            wandb.log({f"confusion_matrix_{self.model_name}": wandb.Image(
+                fig), "epoch": self.current_epoch})
         fig = plot_confusion_matrix(cm=cm_normalized,
                                     normalized=True,
                                     target_names=self.labels,
                                     title=f"Confusion Matrix of {self.model_name}",
                                     file_path=None,
                                     show_figure=False)
-        wandb.log({f"confusion_matrix_{self.model_name}_normalized": wandb.Image(
-            fig), "epoch": self.current_epoch})
+
+        if self.using_wandb:
+            wandb.log({f"confusion_matrix_{self.model_name}_normalized": wandb.Image(
+                fig), "epoch": self.current_epoch})
 
     def configure_optimizers(self):
-        optimizer = th.optim.Adam(self.model.parameters(
-        ), lr=self.learning_rate, weight_decay=self.weight_decay)
+        optimizer = th.optim.Adam(self.model.parameters(),
+                                  lr=self.learning_rate,
+                                  weight_decay=self.weight_decay)
         return optimizer

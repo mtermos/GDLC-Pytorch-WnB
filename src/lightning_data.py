@@ -70,6 +70,7 @@ class LitDataModule(pl.LightningDataModule):
         dataset,
         batch_size=128,
         multi_class=True,
+        use_centralities=True,
         network_features=None,
         **dataset_kwargs
     ):
@@ -79,6 +80,7 @@ class LitDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.multi_class = multi_class
         self.dataset = dataset
+        self.use_centralities = use_centralities
         self.network_features = network_features
         self.dataset_kwargs = dataset_kwargs
         self.model_type = "fnn"
@@ -101,12 +103,22 @@ class LitDataModule(pl.LightningDataModule):
             self.y_val = np.array(self.X_val[self.dataset.label_col])
             self.y_test = np.array(self.X_test[self.dataset.label_col])
 
-        if self.network_features:
-            cols_to_norm = list(set(list(self.X_train.columns)) - set(list([self.dataset.label_col, self.dataset.class_num_col])) - set(
-                self.dataset.drop_columns) - set(self.dataset.weak_columns) - set(self.network_features))
+        if self.use_centralities:
+            cols_to_norm = list(
+                set(self.X_train.columns)
+                - {self.dataset.label_col, self.dataset.class_num_col}
+                - set(self.dataset.drop_columns)
+                - set(self.dataset.weak_columns)
+            )
         else:
-            cols_to_norm = list(set(list(self.X_train.columns)) - set(list([self.dataset.label_col, self.dataset.class_num_col])) - set(
-                self.dataset.drop_columns) - set(self.dataset.weak_columns))
+            cols_to_norm = list(
+                set(self.X_train.columns)
+                - {self.dataset.label_col, self.dataset.class_num_col}
+                - set(self.dataset.drop_columns)
+                - set(self.dataset.weak_columns)
+                - set(self.network_features)
+            )
+        print(f"==>> cols_to_norm: {cols_to_norm}")
 
         scaler = StandardScaler()
 
