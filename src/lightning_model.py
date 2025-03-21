@@ -1,5 +1,6 @@
 import pytorch_lightning as pl
 import torch as th
+import timeit
 import os
 import json
 import wandb
@@ -110,6 +111,9 @@ def plot_confusion_matrix(cm,
         plt.savefig(file_path)
     if show_figure:
         plt.show()
+    else:
+        plt.close(fig)
+
     return fig
 
 
@@ -125,7 +129,7 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 class LitClassifier(pl.LightningModule):
-    def __init__(self, model, criterion, learning_rate, config, model_name, labels_mapping, weight_decay=0, using_wandb=False, multi_class=False, label_col="Label", class_num_col="Class", batch_size=128):
+    def __init__(self, model, criterion, learning_rate, config, model_name, labels_mapping, weight_decay=0, using_wandb=False, multi_class=False, label_col="Label", class_num_col="Class"):
         """
         model:      your neural network (an instance of nn.Module)
         criterion:  loss function
@@ -145,7 +149,6 @@ class LitClassifier(pl.LightningModule):
         self.multi_class = multi_class
         self.label_col = label_col
         self.class_num_col = class_num_col
-        self.batch_size = batch_size
         self.save_hyperparameters(config)
         self.train_epoch_metrics = {}
         self.val_epoch_metrics = {}
@@ -158,15 +161,17 @@ class LitClassifier(pl.LightningModule):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
+        print(f"================>> training_step")
         x, y = batch
         pred = self(x)
         loss = self.criterion(pred, y)
         pred = pred.argmax(dim=1)
         acc = (pred == y).float().mean() * 100.0
         self.log('train_loss', loss, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
+        print(f"==>> len(x): {len(x)}")
         self.log('train_acc', acc, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
 
         self.train_outputs["preds"].append(pred)
         self.train_outputs["targets"].append(y)
@@ -174,26 +179,29 @@ class LitClassifier(pl.LightningModule):
         return loss
 
     def on_train_epoch_end(self):
+        print(f"================>> on_train_epoch_end")
         all_preds = th.cat(self.train_outputs["preds"]).detach().cpu().numpy()
         all_targets = th.cat(
             self.train_outputs["targets"]).detach().cpu().numpy()
         weighted_f1 = f1_score(all_targets, all_preds,
                                average="weighted") * 100.0
         self.log("train_f1_score", weighted_f1, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True)
 
         self.train_outputs = {"preds": [], "targets": []}
 
     def validation_step(self, batch, batch_idx):
+        print(f"================>> validation_step")
         x, y = batch
+        print(f"==>> len(x): {len(x)}")
         pred = self(x)
         loss = self.criterion(pred, y)
         pred = pred.argmax(dim=1)
         acc = (pred == y).float().mean() * 100.0
         self.log('val_loss', loss, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
         self.log('val_acc', acc, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
 
         self.val_outputs["preds"].append(pred)
         self.val_outputs["targets"].append(y)
@@ -201,33 +209,44 @@ class LitClassifier(pl.LightningModule):
         return {"val_loss": loss, "val_acc": acc}
 
     def on_validation_epoch_end(self):
+        print(f"================>> on_validation_epoch_end")
         all_preds = th.cat(self.val_outputs["preds"]).detach().cpu().numpy()
         all_targets = th.cat(
             self.val_outputs["targets"]).detach().cpu().numpy()
         weighted_f1 = f1_score(all_targets, all_preds,
                                average="weighted") * 100.0
+        print(f"==>> weighted_f1: {weighted_f1}")
         self.log("val_f1_score", weighted_f1, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True)
 
         self.val_outputs = {"preds": [], "targets": []}
 
     def test_step(self, batch, batch_idx):
+        print(f"================>> test_step")
         x, y = batch
         pred = self(x)
         loss = self.criterion(pred, y)
+
+        start_time = timeit.default_timer()
         pred = pred.argmax(dim=1)
+        elapsed = timeit.default_timer() - start_time
+        print(f"==>> elapsed: {elapsed}")
+
         acc = (pred == y).float().mean() * 100.0
 
         self.log(f"{self.test_prefix}_test_loss", loss, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
         self.log(f"{self.test_prefix}_test_acc", acc, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True, batch_size=len(x))
+        self.log(f"{self.test_prefix}_elapsed", elapsed, on_epoch=True,
+                 prog_bar=True, batch_size=len(x))
 
         self.test_outputs["preds"].append(pred)
         self.test_outputs["targets"].append(y)
-        return {"test_loss": loss, "test_acc": acc, "preds": pred, "targets": y}
+        return {"test_loss": loss, "test_acc": acc, "preds": pred, "targets": y, "elapsed": elapsed}
 
     def on_test_epoch_end(self):
+        print(f"================>> on_test_epoch_end")
         all_preds = th.cat(self.test_outputs["preds"]).detach().cpu().numpy()
         all_targets = th.cat(
             self.test_outputs["targets"]).detach().cpu().numpy()
@@ -235,7 +254,7 @@ class LitClassifier(pl.LightningModule):
         weighted_f1 = f1_score(all_targets, all_preds,
                                average="weighted") * 100.0
         self.log(f"{self.test_prefix}_test_f1", weighted_f1, on_epoch=True,
-                 prog_bar=True, batch_size=self.batch_size)
+                 prog_bar=True)
 
         all_targets = np.vectorize(self.labels_mapping.get)(all_targets)
         all_preds = np.vectorize(self.labels_mapping.get)(all_preds)

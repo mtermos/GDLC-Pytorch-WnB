@@ -159,14 +159,19 @@ def fraction_outerconnections(g, best):
 
     for i in list_community:  # for each community
         µ = 0
-        couter = 0
+        counter = 0
         for j in list:  # for each node
             if best[j] == i:  # if the community of node j is in community i
-                couter = couter+1  # increment counter
-                kout = degree_out[j]  # get the outer degrees of this node
                 k = degree[j]  # get the total degrees of this node
+                if k == 0:
+                    continue
+                counter = counter+1  # increment counter
+                kout = degree_out[j]  # get the outer degrees of this node
                 µ = µ+float(kout/k)  # add it to u
-        dict_fraction_outerconnections[i] = float(µ/couter)
+        if counter > 0:
+            dict_fraction_outerconnections[i] = float(µ/counter)
+        else:
+            dict_fraction_outerconnections[i] = 0
     return dict_fraction_outerconnections
 
 
@@ -270,15 +275,18 @@ def comm_centrality(g, partition):
         kin = dict_in[i]
         kout = dict_out[i]
 
-        if maxkout == 0:
-            dict_comm[i] = (1 + µc) * (float(kin / maxkin) * R) + (1 - µc) * (float(kout) * R) * (
-                float(kout) * R)
+        if maxkin == 0:
+            dict_comm[i] = 0
         else:
-            try:
-                dict_comm[i] = (1 + µc) * (float(kin / maxkin) * R) + (1 - µc) * (float(kout / maxkout) * R) * (
-                    float(kout / maxkout) * R)
-            except:
-                pass
+            if maxkout == 0:
+                dict_comm[i] = (1 + µc) * (float(kin / maxkin) * R) + (1 - µc) * (float(kout) * R) * (
+                    float(kout) * R)
+            else:
+                try:
+                    dict_comm[i] = (1 + µc) * (float(kin / maxkin) * R) + (1 - µc) * (float(kout / maxkout) * R) * (
+                        float(kout / maxkout) * R)
+                except:
+                    pass
 
     d = dict_comm
     l = []

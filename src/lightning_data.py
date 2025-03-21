@@ -160,7 +160,13 @@ class LitDataModule(pl.LightningDataModule):
             dataset = SlidingWindowDataset(
                 X, y, seq_length=self.dataset_kwargs["sequence_length"], stride=self.dataset_kwargs["stride"])
 
-        return DataLoader(dataset, batch_size=self.batch_size, shuffle=shuffle, num_workers=0, drop_last=True)
+        if self.batch_size == -1:
+            curr_batch_size = len(X)
+            print(f"==>> curr_batch_size: {curr_batch_size}")
+        else:
+            curr_batch_size = self.batch_size
+
+        return DataLoader(dataset, batch_size=curr_batch_size, shuffle=shuffle, num_workers=0, drop_last=True)
 
     def train_dataloader(self):
         return self._get_dataloader("train")

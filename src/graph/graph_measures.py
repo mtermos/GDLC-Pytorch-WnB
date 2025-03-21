@@ -81,13 +81,13 @@ def get_degrees(G, verbose):
     return degrees
 
 
-@time_execution
+# @time_execution
 def find_communities(G, verbose=False):
 
     start_time = timeit.default_timer()
     G1 = ig.Graph.from_networkx(G)
 
-    part = G1.community_infomap()
+    part = G1.community_infomap(trials=5)
     # part = G1.community_multilevel()
     # part = G1.community_spinglass()
     # part = G1.community_edge_betweenness()
